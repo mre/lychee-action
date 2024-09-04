@@ -27,8 +27,19 @@ jobs:
         run: git checkout ${{ github.head_ref }}
 
       - name: Append links-master.txt to .lycheeignore
-        run: cat links-master.txt >> .lycheeignore
+        run: |
+          cat links-master.txt
+          cat links-master.txt >> .lycheeignore
 
+      - name: Dump all links from feature branch
+        id: dump_links_from_feature_branch
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: |
+            --dump
+            --include-fragments
+            .
+          
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
