@@ -12,6 +12,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - name: Check out master branch
+        run: git checkout master
 
       - name: Dump all links from master
         id: dump_links_from_master
@@ -23,23 +28,19 @@ jobs:
             .
           output: ./links-master.txt
 
+      - name: Stash untracked files
+        run: git stash push --include-untracked
+
       - name: Check out feature branch
         run: git checkout ${{ github.head_ref }}
 
-      - name: Append links-master.txt to .lycheeignore
-        run: |
-          cat links-master.txt
-          cat links-master.txt >> .lycheeignore
+      - name: Apply stashed changes
+        # Apply stashed changes, ignore errors if stash is empty
+        run: git stash pop || true
 
-      - name: Dump all links from feature branch
-        id: dump_links_from_feature_branch
-        uses: lycheeverse/lychee-action@v1
-        with:
-          args: |
-            --dump
-            --include-fragments
-            .
-          
+      - name: Append links-master.txt to .lycheeignore
+        run: cat links-master.txt >> .lycheeignore
+
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
