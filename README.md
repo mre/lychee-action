@@ -10,6 +10,13 @@ opened when the action finds link problems.
 
 ## Usage
 
+https://borkenliiiink.com
+
+www.example.com
+
+https://endler.dev
+
+
 Here is a full example of a GitHub workflow file:
 
 It will check all repository links once per day and create an issue in case of
